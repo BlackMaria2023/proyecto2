@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalle del Inmueble{% endblock %}
+{% load static  %}
+{% block content %}
+    {{inmuebles.nombre}}
+
+    {%if user.is_authenticated%}
+    
+    {%endif%}
+   
+{% endblock %}
