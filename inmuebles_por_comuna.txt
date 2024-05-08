@@ -1,0 +1,30 @@
+Nombre: casa 4
+Descripción: Casa
+
+Nombre: parcela 5
+Descripción: Parcela
+
+Nombre: casa 6
+Descripción: Casa
+
+Nombre: departamento 1
+Descripción: Departamento
+
+Nombre: parcela 3
+Descripción: Parcela
+
+Nombre: parcela 1
+Descripción: Parcela
+
+Nombre: departamento 2
+Descripción: Departamento
+
+Nombre: casa 4
+Descripción: Casa
+
+Nombre: departamento 3
+Descripción: Departamento
+
+Nombre: parcela 2
+Descripción: Parcela
+

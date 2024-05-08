@@ -1,5 +1,5 @@
 from django import forms
-from .models import Usuario
+from .models import Usuario, SolicitudArriendo,Inmueble
 
 class RegistroUsuarioForm(forms.ModelForm):
     class Meta:
@@ -8,3 +8,16 @@ class RegistroUsuarioForm(forms.ModelForm):
         widgets = {
             'password': forms.PasswordInput(),
         }
+        
+class InmuebleForm(forms.ModelForm):
+    class Meta:
+        model = Inmueble
+        exclude = ('propietario',)  # Excluimos el campo 'propietario' del formulario
+
+    
+     
+        
+class SolicitudArriendoForm(forms.ModelForm):
+    class Meta:
+        model = SolicitudArriendo
+        fields = ['inmueble', 'mensaje']
