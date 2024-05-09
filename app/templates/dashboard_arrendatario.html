@@ -52,8 +52,7 @@
     <section class="container mx-auto pt-5">
     <div class="row row-cols-1 row-cols-md-3 row-cols-lg-5 g-4">
     {% for solicitud in solicitudes %}
-    
-    <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
+    <div class="card mb-3 {% if solicitud.estado == 'aceptado' %}bg-success{% elif solicitud.estado == 'pendiente' %}bg-warning{% elif solicitud.estado == 'rechazado' %}bg-danger{% else %}bg-secondary{% endif %}" style="max-width: 18rem;"">
       <div class="card-header">{{solicitud.estado}}</div>
       <div class="card-body">
         <h5 class="card-title">{{ solicitud }}</h5>

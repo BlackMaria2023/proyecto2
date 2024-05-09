@@ -1,8 +1,10 @@
+from django.contrib import messages
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserChangeForm
 from django.contrib.auth.decorators import login_required
 from app.models import SolicitudArriendo , Inmueble,Region,Comuna
-from .forms import RegistroUsuarioForm,SolicitudArriendoForm,InmuebleForm
+from .forms import CustomUserChangeForm, RegistroUsuarioForm,SolicitudArriendoForm,InmuebleForm
 
 
 
@@ -10,7 +12,6 @@ from .forms import RegistroUsuarioForm,SolicitudArriendoForm,InmuebleForm
 
 def index(request):
     inmuebles = Inmueble.objects.all()
-    usuario = request.user
     return render(request, 'index.html',{'inmuebles': inmuebles})
 
 
@@ -95,18 +96,11 @@ def alta_inmueble(request):
 @login_required
 def dashboard(request):
     if request.user.usuario.tipo_usuario == 'arrendatario':
-        # Obtener las solicitudes del arrendatario
         solicitudes = SolicitudArriendo.objects.filter(arrendatario=request.user.usuario)
-        
-        # Obtener todas las regiones y comunas disponibles
         regiones = Region.objects.all()
         comunas = Comuna.objects.all()
-        
-        # Obtener los valores seleccionados en el formulario
         region_id = request.GET.get('region')
         comuna_id = request.GET.get('comuna')
-        
-        # Filtrar los inmuebles por región y comuna seleccionadas
         inmuebles = Inmueble.objects.all()
         if region_id:
             inmuebles = inmuebles.filter(comuna__region_id=region_id)
@@ -123,4 +117,24 @@ def dashboard(request):
         return render(request, 'dashboard_arrendador.html', {'solicitudes_recibidas': solicitudes_recibidas, 'inmuebles': inmuebles})
 
 
+@login_required
+def actualizar_usuario(request):
+    if request.method == 'POST':
+        form = CustomUserChangeForm(request.POST, instance=request.user.usuario)
+        print(form)
+        if form.is_valid():
+            form.save()
+            messages.success(request, '¡Los datos del usuario han sido actualizados!')
+            return redirect('dashboard') 
+    else:
+        form = CustomUserChangeForm(instance=request.user.usuario)
+    return render(request, 'perfil.html', {'form': form})
 
+def cambiar_estado_solicitud(request, solicitud_id):
+    solicitud = get_object_or_404(SolicitudArriendo, pk=solicitud_id)
+    if solicitud.inmueble.propietario == request.user.usuario:
+        if request.method == 'POST':
+            nuevo_estado = request.POST.get('nuevo_estado')
+            solicitud.estado = nuevo_estado
+            solicitud.save()
+    return redirect('dashboard')
