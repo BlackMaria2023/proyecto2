@@ -1,27 +1,20 @@
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserChangeForm
 from django.contrib.auth.decorators import login_required
-from app.models import SolicitudArriendo , Inmueble,Region,Comuna
-from .forms import CustomUserChangeForm, RegistroUsuarioForm,SolicitudArriendoForm,InmuebleForm
+from app.models import SolicitudArriendo, Inmueble, Region, Comuna
+from .forms import CustomUserChangeForm, RegistroUsuarioForm, SolicitudArriendoForm, InmuebleForm
 
-
-
-# Create your views here.
 
 def index(request):
     inmuebles = Inmueble.objects.all()
     return render(request, 'index.html',{'inmuebles': inmuebles})
 
 
-
 @login_required
 def detalle_inmueble(request, id):
     inmueble = Inmueble.objects.get (pk=id)
     return render(request,'detalle_inmueble.html',{'inmueble':inmueble})
-
-
 
 
 def registro_usuario(request):
@@ -79,7 +72,7 @@ def solicitudes_arrendador(request):
   
   
 @login_required
-def alta_inmueble(request):
+def crear_inmueble(request):
     if request.method == 'POST':
         form = InmuebleForm(request.POST, request.FILES)
         print(form)
@@ -92,6 +85,28 @@ def alta_inmueble(request):
         form = InmuebleForm()
     return render(request, 'alta_inmueble.html', {'form': form})
 
+
+@login_required
+def actualizar_inmueble(request, id):
+    inmueble = get_object_or_404(Inmueble, pk=id)
+    if request.method == 'POST':
+        form = InmuebleForm(request.POST, request.FILES, instance=inmueble)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+    else:
+        form = InmuebleForm(instance=inmueble)
+    return render(request, 'editar_inmueble.html',{'form':form })
+        
+@login_required
+def eliminar_inmueble(request, id):
+    inmueble = get_object_or_404(Inmueble, pk=id)
+    if request.method == 'POST':
+        inmueble.delete()
+        return redirect('dashboard')
+    else:
+        return render(request,'eliminar_inmueble.html', {'inmueble':inmueble} )
+        
 
 @login_required
 def dashboard(request):
@@ -130,6 +145,8 @@ def actualizar_usuario(request):
         form = CustomUserChangeForm(instance=request.user.usuario)
     return render(request, 'perfil.html', {'form': form})
 
+
+@login_required
 def cambiar_estado_solicitud(request, solicitud_id):
     solicitud = get_object_or_404(SolicitudArriendo, pk=solicitud_id)
     if solicitud.inmueble.propietario == request.user.usuario:
