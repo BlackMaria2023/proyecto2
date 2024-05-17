@@ -27,8 +27,8 @@ SECRET_KEY = 'django-insecure-%48ay8u%#uy=$@j%rqux(l7_4c3-1gzat#xfns73(v(@@(j*2v
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
-#CSRF_TRUSTED_ORIGINS = [mi url]
+ALLOWED_HOSTS = ['*', 'proyecto2-c4qh.onrender.com']
+CSRF_TRUSTED_ORIGINS = ['https://proyecto2-c4qh.onrender.com']
 
 LOGIN_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
